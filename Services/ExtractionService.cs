@@ -3,7 +3,7 @@ using UglyToad.PdfPig;
 
 namespace PPT_generator_API.Services
 {
-    public class PresentationService: IPresentationService
+    public class ExtractionService : IExtractionService
     {
         public string ExtractTextFromPdf(string filePath)
         {

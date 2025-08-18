@@ -24,9 +24,9 @@ namespace PPT_generator_API.Services
             _chatClient = _client.GetChatClient(_deploymentName);
         }
 
-        public async Task<string> GeneratePresentationContentAsync(string inputText)
+        public async Task<string> GenerateContentAsync(string inputText)
         {
-            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that generates PowerPoint slide content."), new SystemChatMessage($"Generate slide titles and bullet points from the following content:\\n\\n{inputText}")]);
+            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that summarizes the document"), new SystemChatMessage($"Summarize the following content:\\n\\n{inputText}")]);
             return chatResult.Value.Content[0].Text;
         }
     }

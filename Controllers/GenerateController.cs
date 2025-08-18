@@ -7,14 +7,14 @@ namespace PPT_generator_API.Controllers
     [ApiController]
     public class GenerateController : ControllerBase
     {
-        private readonly IPresentationService _presentationService;
+        private readonly IExtractionService _presentationService;
         private readonly IOpenAIService _openAIService;
-        public GenerateController(IPresentationService presentationService, IOpenAIService openAIService)
+        public GenerateController(IExtractionService presentationService, IOpenAIService openAIService)
         {
             _presentationService = presentationService;
             _openAIService = openAIService;
         }
-        [HttpPost("upload")]
+        [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -37,8 +37,7 @@ namespace PPT_generator_API.Controllers
             }
             var extractedText = _presentationService.ExtractTextFromPdf(filePath);
 
-            var chatResult = await _openAIService.GeneratePresentationContentAsync(extractedText);
-
+            var chatResult = await _openAIService.GenerateContentAsync(extractedText);
             return Ok(chatResult);
         }
     }
