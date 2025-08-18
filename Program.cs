@@ -1,4 +1,4 @@
-using PPT_generator_API.Services;
+using Summary_generator_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

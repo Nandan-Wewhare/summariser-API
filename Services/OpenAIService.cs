@@ -4,10 +4,8 @@ using Azure.Security.KeyVault.Secrets;
 using OpenAI.Chat;
 using System.ClientModel;
 
-namespace PPT_generator_API.Services
+namespace Summary_generator_API.Services
 {
-    // This service will interact with azure open ai
-
     public class OpenAIService: IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
@@ -26,7 +24,7 @@ namespace PPT_generator_API.Services
 
         public async Task<string> GenerateContentAsync(string inputText)
         {
-            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that summarizes the document"), new SystemChatMessage($"Summarize the following content:\\n\\n{inputText}")]);
+            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that summarizes the document in detail, do not miss anything"), new SystemChatMessage($"Summarize the following content:\\n\\n{inputText}")]);
             return chatResult.Value.Content[0].Text;
         }
     }

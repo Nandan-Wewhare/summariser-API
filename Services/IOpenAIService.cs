@@ -1,6 +1,6 @@
 ﻿using OpenAI.Chat;
 
-namespace PPT_generator_API.Services
+namespace Summary_generator_API.Services
 {
     public interface IOpenAIService
     {

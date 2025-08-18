@@ -1,43 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PPT_generator_API.Services;
+using Summary_generator_API.Services;
 
-namespace PPT_generator_API.Controllers
+namespace Summary_generator_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class GenerateController : ControllerBase
     {
-        private readonly IExtractionService _presentationService;
+        private readonly IExtractionService _extractionService;
         private readonly IOpenAIService _openAIService;
-        public GenerateController(IExtractionService presentationService, IOpenAIService openAIService)
+        public GenerateController(IExtractionService extractionService, IOpenAIService openAIService)
         {
-            _presentationService = presentationService;
+            _extractionService = extractionService;
             _openAIService = openAIService;
         }
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
+            string extractedText = "";
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            if (extension != ".pdf" && extension != ".xls" && extension != ".xlsx")
-                return BadRequest("Only PDF and Excel files are supported.");
-
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
-
-            var filePath = Path.Combine(uploadsFolder, file.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            string filePath = "";
+            switch (extension)
             {
-                await file.CopyToAsync(stream);
+                case ".pdf":
+                    filePath = await _extractionService.MoveFile(file);
+                    extractedText = _extractionService.ExtractTextFromPdf(filePath);
+                    break;
+                case ".xls":
+                case ".xlsx":
+                    filePath = await _extractionService.MoveFile(file);
+                    extractedText = _extractionService.ExtractTextFromExcel(filePath);
+                    break;
+                default:
+                    return BadRequest("File type not supported.");
             }
-            var extractedText = _presentationService.ExtractTextFromPdf(filePath);
-
             var chatResult = await _openAIService.GenerateContentAsync(extractedText);
+
             return Ok(chatResult);
         }
     }

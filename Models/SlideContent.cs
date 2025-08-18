@@ -1,4 +1,4 @@
-﻿namespace PPT_generator_API.Models
+﻿namespace Summary_generator_API.Models
 {
     public class SlideContent
     {
