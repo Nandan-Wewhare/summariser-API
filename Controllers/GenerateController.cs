@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using PPT_generator_API.Services;
 
 namespace PPT_generator_API.Controllers
 {
@@ -7,6 +7,13 @@ namespace PPT_generator_API.Controllers
     [ApiController]
     public class GenerateController : ControllerBase
     {
+        private readonly IPresentationService _presentationService;
+        private readonly IOpenAIService _openAIService;
+        public GenerateController(IPresentationService presentationService, IOpenAIService openAIService)
+        {
+            _presentationService = presentationService;
+            _openAIService = openAIService;
+        }
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
@@ -24,14 +31,15 @@ namespace PPT_generator_API.Controllers
                 Directory.CreateDirectory(uploadsFolder);
 
             var filePath = Path.Combine(uploadsFolder, file.FileName);
-
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+            var extractedText = _presentationService.ExtractTextFromPdf(filePath);
 
-            return Ok(new { message = "File uploaded successfully", fileName = file.FileName });
+            var chatResult = await _openAIService.GeneratePresentationContentAsync(extractedText);
+
+            return Ok(chatResult);
         }
-
     }
 }
