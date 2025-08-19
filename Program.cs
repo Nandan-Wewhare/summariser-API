@@ -11,6 +11,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IExtractionService, ExtractionService>();
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
+
+builder.Services.AddApplicationInsightsTelemetry();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
