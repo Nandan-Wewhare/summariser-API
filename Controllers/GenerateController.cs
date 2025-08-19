@@ -14,6 +14,13 @@ namespace Summary_generator_API.Controllers
             _extractionService = extractionService;
             _openAIService = openAIService;
         }
+
+        [HttpGet]
+        public ActionResult HealthCheck()
+        {
+            return Ok("Service is up 🚀");
+        }
+
         [HttpPost]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
