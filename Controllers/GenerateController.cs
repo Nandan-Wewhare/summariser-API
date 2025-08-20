@@ -22,11 +22,13 @@ namespace Summary_generator_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+        public async Task<IActionResult> UploadFile(IFormFile file, [FromForm] string jobDescription)
         {
             string extractedText = "";
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
+            if (jobDescription.Length == 0)
+                return BadRequest("Job description is required.");
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
@@ -37,15 +39,10 @@ namespace Summary_generator_API.Controllers
                     filePath = await _extractionService.MoveFile(file);
                     extractedText = _extractionService.ExtractTextFromPdf(filePath);
                     break;
-                case ".xls":
-                case ".xlsx":
-                    filePath = await _extractionService.MoveFile(file);
-                    extractedText = _extractionService.ExtractTextFromExcel(filePath);
-                    break;
                 default:
                     return BadRequest("File type not supported.");
             }
-            var chatResult = await _openAIService.GenerateContentAsync(extractedText);
+            var chatResult = await _openAIService.GenerateContentAsync(extractedText, jobDescription);
 
             return Ok(chatResult);
         }

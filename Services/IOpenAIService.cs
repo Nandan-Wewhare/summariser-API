@@ -4,6 +4,6 @@ namespace Summary_generator_API.Services
 {
     public interface IOpenAIService
     {
-        Task<string> GenerateContentAsync(string inputText);
+        Task<string> GenerateContentAsync(string inputText, string jobDescription);
     }
 }
