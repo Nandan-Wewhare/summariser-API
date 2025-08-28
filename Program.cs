@@ -1,3 +1,4 @@
+using Summary_generator_API.Middleware;
 using Summary_generator_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,18 +12,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IExtractionService, ExtractionService>();
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:4200", "https://summariser-ui.azurewebsites.net")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddApplicationInsightsTelemetry();
 
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
