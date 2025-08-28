@@ -16,7 +16,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:4200", "https://summariser-ui.azurewebsites.net")
+        policy.WithOrigins("http://localhost:4200", "https://summariser-ui.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -32,6 +32,8 @@ app.UseSwaggerUI();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

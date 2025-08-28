@@ -44,7 +44,7 @@ namespace Summary_generator_API.Controllers
             }
             var chatResult = await _openAIService.GenerateContentAsync(extractedText, jobDescription);
 
-            return Ok(chatResult);
+            return Ok(new { chatResult });
         }
     }
 }

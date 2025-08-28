@@ -24,7 +24,7 @@ namespace Summary_generator_API.Services
 
         public async Task<string> GenerateContentAsync(string parsedResume, string jobDescription)
         {
-            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that will analyse the resume and a job description, and give a % probability that the resume gets selected by any ATS. The job description could be a link also, so in that case you need to parse the job description from there. If you cannot do that, just flag it and give the % - nothing else."), new SystemChatMessage($"Analyse the following resume and job description:\\n\\n{parsedResume} \\n\\n{jobDescription}")]);
+            var chatResult = await _chatClient.CompleteChatAsync([new SystemChatMessage("You are a helpful assistant that will analyse the resume and a job description, and give a % probability that the resume gets selected by any ATS. The job description could be a link also, so in that case you need to parse the job description from there. If you cannot do that, just flag it and give the % - nothing else.\n Give the response in this format - Probability: xx%\n Additional Notes: SomeText"), new SystemChatMessage($"Analyse the following resume and job description:\\n\\n{parsedResume} \\n\\n{jobDescription}")]);
             return chatResult.Value.Content[0].Text;
         }
     }
